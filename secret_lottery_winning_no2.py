@@ -13,25 +13,38 @@ week's draw. But the numbers drawn are completely different.
 '''
 
 ### SOLUTION:
-from random import randint
+import string, random
+MAX_NO = 48
+d = dict([(i,v) for i,v in enumerate(string.ascii_letters + string.digits + '-_')])
+dr = dict(map(reversed, d.items()))
+encode = lambda d : ''.join(['1' if i+1 in d else '0' for i in range(MAX_NO)])
+decode = lambda p :''.join([('000000'+bin(dr[i])[2:])[-6:] for i in p])
 
-gen_encrypted_winning_no    = lambda    : ''.join([chr(randint(48,90)) for _ in range(256)])
-def gen_decrypt_key(locked_winning_no_to_MrX, data):
-    key = ''.join(['1' if i+1 in data else '0' for i in range(36)])
-    d = dict([(i,chr(v)) for i,v in enumerate(range(ord('0'), ord('9')) + range(ord('A'), ord('Z')) + range(ord('a'), ord('z')) + [ord('-'), ord('_')])])
-    dr = dict([(d[k], k) for k in d])
-    return ''.join([d[eval('0b' + key[i*6:i*6+6])] for i in range(6)])
-    
-def decrypt_winning_no(locked_winning_no_to_MrX, passwd):
-    d = dict([(i,chr(v)) for i,v in enumerate(range(ord('0'), ord('9')) + range(ord('A'), ord('Z')) + range(ord('a'), ord('z')) + [ord('-'), ord('_')])])
-    dr = dict([(d[k], k) for k in d])
-    dd = ''.join([('000000' + bin(dr[i])[2:])[-6:] for i in passwd])
-    return [i+1 for i,v in enumerate(dd) if v == '1']
+# main logic
+gen_encrypted_winning_no = lambda : ''.join(random.sample(string.ascii_letters*128,128))
+gen_decrypt_key = lambda _, data : ''.join([d[eval('0b'+encode(data)[i*6:i*6+6])] for i in range((MAX_NO+5)/6)])
+decrypt_winning_no = lambda _, passwd: [i+1 for i,v in enumerate(decode(passwd)) if v == '1']
 
-locked_winning_no_to_MrX = gen_encrypted_winning_no() # give fake encrypted no. to mr. X
+### USE CASE:
+# give fake encrypted no. to mr. X
+locked_winning_no_to_MrX = gen_encrypted_winning_no()
 print 'locked_winning_no_to_MrX :\n\t', locked_winning_no_to_MrX
-key_to_unlock = gen_decrypt_key(locked_winning_no_to_MrX, [1,2,5,6,7,9,12,13,15,16,17,20,21,23,25,26,27,28,29,30,33,36]) # wait for actual winning no. is out and generate fake key
+
+# wait for actual winning no. is out and generate fake key
+WINNING_NO = [1,2,5,6,7,9,12,13,15,16,17,20,21,23,25,26,27,28,29,30,33,36,37,39,43,44,47,48]
+key_to_unlock = gen_decrypt_key(locked_winning_no_to_MrX, WINNING_NO)
 print 'key_to_unlock :\n\t', key_to_unlock
-unlocked_winning_no_to_MrX = decrypt_winning_no(locked_winning_no_to_MrX, key_to_unlock) # mr. X uses the fake key to decrypt the fake encrpted no.
+
+# mr. X uses the fake key to decrypt the fake encrpted no.
+unlocked_winning_no_to_MrX = decrypt_winning_no(locked_winning_no_to_MrX, key_to_unlock)
 print 'unlocked_winning_no_to_MrX :\n\t', unlocked_winning_no_to_MrX
 
+### OUTPUT:
+'''
+locked_winning_no_to_MrX :
+	flnUhkHtYpSAsFhsuJTYhOhVcoRYzkhKzkZMEnpKDdDmiCYTFJgFrTuvNJaljzAkTyueSYxaNiIStMyqfAVRTTPQPMTUFnNAvlpWzjltNoPEibApIpuEGjmIhMQecYAv
+key_to_unlock :
+	ZPUA_jOZ
+unlocked_winning_no_to_MrX :
+	[1, 2, 5, 6, 7, 9, 12, 13, 15, 16, 17, 20, 21, 23, 25, 26, 27, 28, 29, 30, 33, 36, 37, 39, 43, 44, 47, 48]
+'''
