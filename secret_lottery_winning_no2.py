@@ -14,15 +14,17 @@ week's draw. But the numbers drawn are completely different.
 
 ### SOLUTION:
 import string, random
-MAX_NO = 48
-d = dict([(i,v) for i,v in enumerate(string.ascii_letters + string.digits + '-_')])
+UNIT, MAX_NO = 6, 48
+d = dict(enumerate(string.ascii_letters + string.digits + '-_'))
 dr = dict(map(reversed, d.items()))
-encode = lambda d : ''.join(['1' if i+1 in d else '0' for i in range(MAX_NO)])
-decode = lambda p :''.join([('000000'+bin(dr[i])[2:])[-6:] for i in p])
+
+# encoder, decoder
+encode = lambda d: ''.join(['1' if i+1 in d else '0' for i in range(MAX_NO)])
+decode = lambda p: ''.join([('0'*UNIT+bin(dr[i])[2:])[-UNIT:] for i in p])
 
 # main logic
 gen_encrypted_winning_no = lambda : ''.join(random.sample(string.ascii_letters*128,128))
-gen_decrypt_key = lambda _, data : ''.join([d[eval('0b'+encode(data)[i*6:i*6+6])] for i in range((MAX_NO+5)/6)])
+gen_decrypt_key = lambda _, data : ''.join([d[eval('0b'+encode(data)[i*UNIT:(i+1)*UNIT])] for i in range((MAX_NO+UNIT-1)/UNIT)])
 decrypt_winning_no = lambda _, passwd: [i+1 for i,v in enumerate(decode(passwd)) if v == '1']
 
 ### USE CASE:
