@@ -1,0 +1,17 @@
+# HARDWARE for the team:
+1. A GPU Cluster for Machine Learning
+2. A dedicated storage/server (with auto backup services) for source code & data keeping
+3. 3+ dedicated servers for building blockchain testing enveronment (this can be shared with the GPU cluster if the budget is limited)
+
+# HARDWARE for myself:
+1. A Windows 10 workstation with 2-3 displays
+2. (Optional) A Windows 10 laptop for remote work
+
+# SOFTWARE for the team:
+1. Bloomberg terminal, for market data feed and news feed - depends on project requirments, could be optional
+2. Others (Optional) - as a lot of free/open source software is available
+
+# SOFTWARE for myself:
+1. Microsoft Windows 10 Professional
+2. Microsoft Office 2016 for Buniness
+3. Microsoft Visual Studio Pro (Optional, as free community version should work for most of the cases)
