@@ -4,4 +4,12 @@ Title: Order and Information
 
 I always have some thoughts about information and order. So I would like to just create and maintain a draft book somewhere and put as much as I can and as easy as I can so that can be easily put together later to make a story.
 
-Let's think about the initialization of the universe. The big bang theory really doesn't make much sense as according to the thermodynamics second law, the 
+Let's think about the initialization of the universe. # To be added. Need to mention here the thermal dynamics second law - given a simply example - the work generated from an gas expension, there is only one optimal case of expension which was performed with carefully tuned presure applied against. 
+
+For any data transformation events, e.g. [(0,1),(1,0)] is transformed into [(1,0), (1,0)], we can see the dimension haven't been changed. The dimension here defines the information. When no physical meaning were bind into (0,1) or (1,0), the value (0,1) or (1,0) does not mean anything. In such case, only the dimensions represents the system - in the other word, it only contains information of dimension of two. Any transformation against the data will not increase the level of information. But the transformation will possibly reduce the level of information - this is somewhat similar with the outcome of thermal dynamics second law, the entropy will only increase.
+
+With such derivation, we can easily draw a conclusion that all data processings are just those functions which are applied onto a given data set to extract part of the information. Say D = [X1, X2, X..., Xn], any function F, after applying the F on D, you will only get a subset of D. We can write it as sub-D = F(D).
+
+The above conclusion is generic and appplicable for any D and F. One may argue that the function F can be anything which could produce a random number of D, e.g. D1, D2, D... The answer to this is that, no matter how Dx is presented, it will contain only the information within D. As a result, all the Dx will still sit inside the original D. Unless some additional information was brought in by function F.
+
+# to be added.
