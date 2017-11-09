@@ -6,7 +6,7 @@ would create a time paradox. Therefore, he's willing to sell next week's winning
 as gullible as he is, feels that this may be a scam and asks for a proof. Alien gives him the next week's winning numbers in
 encrypted form so that Mr. X can't use them and then decide not to pay for them. After the lottery draw he'll give Mr. X the key
 to unlock the file and Mr. X can verify that the prediction was correct.
-After the draw, Mr. X gets the key and lo and behold, the numbers are correct! To rule out the possibility that it happened by chance,
+After the draw, Mr. X gets the key and behold, the numbers are correct! To rule out the possibility that it happened by chance,
 they do the experiment twice. Then thrice. Finally, Mr. X is persuaded. He pays the alien and gets the set of numbers for the next
 week's draw. But the numbers drawn are completely different.
     And now the question: How did the scam work?
