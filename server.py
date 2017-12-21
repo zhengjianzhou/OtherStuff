@@ -4,21 +4,36 @@ from time import time
 from urlparse import urlparse
 from uuid import uuid4
 from flask import Flask, jsonify, request
-from block_chain.core_utils import hash, proof_of_work
-from block_chain.blockchain import BlockChain
-from block_chain.transaction import Transaction
+from blockchain.core_utils import hash, proof_of_work
+from blockchain.blockchain import BlockChain
+from blockchain.transaction import Transaction
 from blockchain.model import Model
 
 
 def validator(**kwargs):
     return True
 
-model = Model(transation_type=type(Transaction), model_validator=validator)
+class TestTransaction(Transaction):
+    @property
+    def default(self):
+        return TestTransaction(
+            sender="0",
+            recipient=str(uuid4()).replace('-', ''),
+            amount=1,
+        ).value
 
-app = Flask(__name__)
-node_identifier = str(uuid4()).replace('-', '')
+model = Model(transation_type=type(TestTransaction), model_validator=validator)
 block_chain = BlockChain(model)
 
+'''
+BlockChain server:
+    INPUT:
+        Mother_node (with port no)
+        Self_node (with port no)
+        Model
+'''
+
+app = Flask(__name__)
 
 @app.route('/mine', methods=['GET'])
 def mine():
@@ -26,11 +41,7 @@ def mine():
     last_proof = last_block['proof']
     proof = proof_of_work(last_proof)
 
-    txn = Transaction(
-        sender="0",
-        recipient=node_identifier,
-        amount=1,
-    )
+    txn = model.transation_type().default
     block_chain.add_transactions([txn])
     
     previous_hash = hash(last_block)
@@ -65,6 +76,7 @@ def full_chain():
     return jsonify(response), 200
 
 
+# TODO: need a process to auto registor nodes
 @app.route('/nodes/register', methods=['POST'])
 def register_nodes():
     values = request.get_json()
@@ -82,8 +94,8 @@ def register_nodes():
     }
     return jsonify(response), 201
 
-
-# @app.route('/nodes/resolve', methods=['GET'])
+# TODO: need a process to call consensus
+@app.route('/nodes/resolve', methods=['GET'])
 def consensus():
     replaced = block_chain.resolve_conflicts()
 
@@ -99,8 +111,6 @@ def consensus():
         }
 
     return jsonify(response), 200
-
-# TODO: need a process to call consensus
 
 # APP thread
 app.run(host='127.0.0.1', port=5001, threaded=True)
