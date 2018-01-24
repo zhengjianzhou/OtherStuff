@@ -1,0 +1,51 @@
+def isSquareNumber(n):
+    bl = n.bit_length()
+    for half_bl in [bl//2, (bl-1)//2]:
+        lx = 1<<half_bl
+        for i in range(half_bl)[::-1]:
+            lx = lx | 1<<i
+            nm2 = lx * lx
+            if nm2 > n: lx = lx^1<<i
+            if nm2 == n or lx*lx == n: return True
+        
+    return False
+
+for x in range(1, 1000):
+    if isSquareNumber(x):
+        print x, isSquareNumber(x)
+
+
+'''
+### OUTPUT ###
+4 True
+9 True
+16 True
+25 True
+36 True
+49 True
+64 True
+81 True
+100 True
+121 True
+144 True
+169 True
+196 True
+225 True
+256 True
+289 True
+324 True
+361 True
+400 True
+441 True
+484 True
+529 True
+576 True
+625 True
+676 True
+729 True
+784 True
+841 True
+900 True
+961 True
+>>> 
+'''
