@@ -1,12 +1,12 @@
 def isSquareNumber(n):
     bl = n.bit_length()
     for half_bl in [bl//2, (bl-1)//2]:
-        lx = 1<<half_bl
+        x = 1<<half_bl
         for i in range(half_bl)[::-1]:
-            lx = lx | 1<<i
-            nm2 = lx * lx
-            if nm2 > n: lx = lx^1<<i
-            if nm2 == n or lx*lx == n: return True
+            x = x | 1<<i
+            x2 = x*x
+            if x2 > n: x = x^1<<i
+            if x2 == n or x*x == n: return True
         
     return False
 
