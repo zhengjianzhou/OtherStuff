@@ -1,22 +1,17 @@
-def isSquareNumber(n):
+def is_square(n):
     bl = n.bit_length()
-    
-    half_bl = bl//2
-    if n < (1<<half_bl)**2:
-        half_bl = (bl-1)//2
+    half_bl = (bl-1)//2 if n < (1<<(bl//2))**2 else bl//2
 
     x = 1<<half_bl
     for i in range(half_bl)[::-1]:
-        x = x | 1<<i
-        x2 = x**2
-        if x2 > n: x = x^1<<i
-        if x2 == n or x**2 == n: return True
-        
+        if (x|1<<i)**2 <= n: x = x|1<<i
+        if x**2 == n: return True
+
     return False
 
 for x in range(1, 1000):
-    if isSquareNumber(x):
-        print x, isSquareNumber(x)
+    if is_square(x):
+        print x, is_square(x)
 
 
 '''
