@@ -168,7 +168,7 @@ def test2():
     kirk_res = Kirk(r,t,k,s1,s2,v1,v2,rho)
 
     x,y,z = [], [], []
-    print "no.paths| Monte Carlo | Kirk's Approximation"
+    print("no.paths| Monte Carlo | Kirk's Approximation")
     for i in range(15, 60):
         no_of_paths = int(exp(i/5.))
         mc_res = MC(no_of_paths,r,t,k,s1,s2,v1,v2,rho)
