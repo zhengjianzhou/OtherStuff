@@ -81,16 +81,10 @@ def GBM(s1, s2, v1, v2, r, t, rho):
     '''
     Geometric Brownian Motions (GBM) for 2 correlated assets
     '''
-    days = int(t * 365.)
-    dt = 1./365.
-    w1, w2 = 0., 0.
-    for d in range(days):
-        dw1 = np.random.normal(0., 1.)
-        dw2 = rho * dw1 + sqrt(1. - rho**2) * np.random.normal(0., 1.)
-        w1 += dw1
-        w2 += dw2
-    s1 = s1 * exp( (r - 0.5*v1**2) * dt + v1*dw1 )
-    s2 = s2 * exp( (r - 0.5*v2**2) * dt + v2*dw2 )
+    dw1 = np.random.normal(0., 1.)
+    dw2 = rho * dw1 + sqrt(1. - rho**2) * np.random.normal(0., 1.)
+    s1 = s1 * exp( 0.5*dt*v1**2 + v1*sqrt(t)*dw1 )
+    s2 = s2 * exp( 0.5*dt*v2**2 + v2*sqrt(t)*dw2 )
     return s1, s2
 
 def MC(paths, r, t, k, s1, s2, v1, v2, rho):
@@ -100,10 +94,9 @@ def MC(paths, r, t, k, s1, s2, v1, v2, rho):
     count, sums = 0, 0.
     for i in range(paths):
         _s1, _s2 = GBM(s1, s2, v1, v2, r, t, rho)
-        result = _s1 - _s2 - k
-        sums += max(result, 0.)
+        sums += max(_s1 - _s2 - k, 0.)
         count += 1
-    return sums / float(count)
+    return exp(-r*t) * sums/float(count)
 
 def Kirk(r, t, k, s1, s2, v1, v2, rho):
     '''
@@ -112,7 +105,7 @@ def Kirk(r, t, k, s1, s2, v1, v2, rho):
     '''
     s2k = s2/(s2 + k)
     sigk = sqrt(v1**2 - 2.*s2k*rho*v1*v2 + s2k**2 * v2**2)
-    dk1 = (log(s2k) + 0.5*t*sigk**2) / sigk * sqrt(t)
+    dk1 = (log(s1/(s2 + k)) + 0.5*t*sigk**2) / sigk * sqrt(t)
     dk2 = dk1 - sigk * sqrt(t)
     result = exp(-r * t) * (s1*stats.norm.cdf(dk1) - (s2+k)*stats.norm.cdf(dk2))
     return result
@@ -133,7 +126,7 @@ def test1():
     for k in Ks:
         res = []
         for rho in Rhos:
-            mc_res = MC(2000,r,t,k,s1,s2,v1,v2,rho)
+            mc_res = MC(10000,r,t,k,s1,s2,v1,v2,rho)
             kirk_res = Kirk(r,t,k,s1,s2,v1,v2,rho)
             res.append('{:7.4f}, {:7.4f}'.format(mc_res, kirk_res))
         print('K={:4.0f} | '.format(k) + ' | '.join(res))
@@ -150,7 +143,7 @@ def test2():
 
     x,y,z = [], [], []
     print "no.paths| Monte Carlo | Kirk's Approximation"
-    for i in range(15, 45):
+    for i in range(15, 60):
         no_of_paths = int(exp(i/5.))
         mc_res = MC(no_of_paths,r,t,k,s1,s2,v1,v2,rho)
         x.append(no_of_paths)
