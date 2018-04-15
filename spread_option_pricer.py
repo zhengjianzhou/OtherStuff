@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# implemented in python 2.7
-
 import numpy as np
 from scipy import stats
 import matplotlib.pyplot as plt
@@ -12,26 +9,22 @@ Question:
     => Given S1, S2 are dependent GBMs with correlation 'rho'
 2) Find a closed form approximation and implement the logic
 3) Show MC convergence graph to the approximation
-
 Answer:
 1) The Monte Carlo simulation was written in below function MC(). Use cases can be found in test1(), test2()
 2) Implemented Kirk's approximation in function kirk(), referring to, Kirk, E. (1995): "Correlation in the energy markets," In Managing Energy Price Risk (First Edition)
 3) test2() produces the MC convergence graph to Kirk approximation for given parameters
-
 Potential improvements:
 This code is for demonstration purpose. Below points can be implemented if needed,
 1) performance tweeks
 2) improve the matplotlib result plotting
 3) use OptionParser class for easier user inputs for testing
     => from optparse import OptionParser
-
 Variables:
     s1, s2: asset prices
     v1, v2: daily volatilities
     r:      riskless interest rate
     rho:    correlation btw w1 and w2
     t:      time (in years)
-
 Given,
     corr(dw1, dw2) = rho
 Let w1 be an independent Geometric Brownian Motion(GBM), we have,
@@ -40,7 +33,6 @@ where w1 and w3 are independent GBMs
     Since s1, s2 follows GBM, we have,
     d ln(S1) = (r - (v1**2)/2)*dt + v1*dw1
     d ln(S2) = (r - (v2**2)/2)*dt + v1*dw2
-
 Output:
     Test 1:
     -------
@@ -103,14 +95,24 @@ no.paths| Monte Carlo | Kirk's Approximation
  133252 |   19.3624   | 19.2835
 '''
 
-def GBM(s1, s2, v1, v2, r, t, rho):
+def GBM(s1, s2, v1, v2, r, t, rho, random_walk=False):
     '''
     Geometric Brownian Motions (GBM) for 2 correlated assets
     '''
-    dw1 = np.random.normal(0., 1.)
-    dw2 = rho * dw1 + sqrt(1. - rho**2) * np.random.normal(0., 1.)
-    s1 = s1 * exp( -0.5*t*v1**2 + v1*sqrt(t)*dw1 )
-    s2 = s2 * exp( -0.5*t*v2**2 + v2*sqrt(t)*dw2 )
+    if not random_walk:
+        dw1 = np.random.normal(0., 1.)
+        dw2 = rho * dw1 + sqrt(1. - rho**2) * np.random.normal(0., 1.)
+        s1 = s1 * exp( -0.5*t*v1**2 + v1*sqrt(t)*dw1 )
+        s2 = s2 * exp( -0.5*t*v2**2 + v2*sqrt(t)*dw2 )
+    else:
+        w1, w2 = 0., 0.
+        dt = t/365.
+        days = int(t * 365)
+        for i in range(days):
+            dw1 = np.random.normal(0., 1.)
+            dw2 = rho * dw1 + sqrt(1. - rho**2) * np.random.normal(0., 1.)
+            s1 = s1 * exp( -0.5*dt*v1**2 + v1*sqrt(dt)*dw1 )
+            s2 = s2 * exp( -0.5*dt*v2**2 + v2*sqrt(dt)*dw2 )
     return s1, s2
 
 def MC(paths, r, t, k, s1, s2, v1, v2, rho):
@@ -136,6 +138,25 @@ def Kirk(r, t, k, s1, s2, v1, v2, rho):
     result = exp(-r * t) * (s1*stats.norm.cdf(dk1) - (s2+k)*stats.norm.cdf(dk2))
     return result
 
+def _element(dw1, dw3, s1, s2, v1, v2, t, rho, k):
+    dw2 = rho * dw1 + sqrt(1. - rho**2) * dw3
+    s1 = s1 * exp( -0.5*t*v1**2 + v1*sqrt(t)*dw1 )
+    s2 = s2 * exp( -0.5*t*v2**2 + v2*sqrt(t)*dw2 )
+    return max(s1 - s2 - k, 0.)
+
+def numerical(r,t,k,s1,s2,v1,v2,rho):
+    # setup the steps independent random variable w1, w3
+    nofs1,sz1,left1 = 100, 0.1, -10.
+    nofs3,sz3,left3 = 100, 0.1, -10.
+    sums = 0.
+    for i in range(nofs1):
+        for j in range(nofs3):
+            dw1, dw3 = left1 + i*sz1, left3 + j*sz3
+            u = _element(dw1, dw3, s1, s2, v1, v2, t, rho, k) * stats.norm.pdf(dw1) * stats.norm.pdf(dw3) * dw1 * dw3
+            sums += u
+            
+    return exp(-r*t) * sums
+
 def test1():
     '''
     Tests 1: Comparing test results with P. Bjerksund & G. Stensland's paper,
@@ -148,13 +169,15 @@ def test1():
 
     Ks = [-20, -10, 0, 5,15, 25]
     Rhos = [-1., -0.5, 0., 0.3, 0.8, 1.]
-    print('K \ Rho|' + '|'.join(['         {:8.2f} '.format(i) for i in Rhos]))
+    print('K \ Rho|' + '|'.join(['        {:8.2f}           '.format(i) for i in Rhos]))
+    print('       |'+'|'.join(['      MC,    Kirk,Numerical']* len(Rhos)))
     for k in Ks:
         res = []
         for rho in Rhos:
             mc_res = MC(10000,r,t,k,s1,s2,v1,v2,rho)
             kirk_res = Kirk(r,t,k,s1,s2,v1,v2,rho)
-            res.append('{:7.4f}, {:7.4f}'.format(mc_res, kirk_res))
+            numerical_res = numerical(r,t,k,s1,s2,v1,v2,rho)
+            res.append('{:7.4f}, {:7.4f}, {:7.4f}'.format(mc_res, kirk_res, numerical_res))
         print('K={:4.0f} | '.format(k) + ' | '.join(res))
 
 def test2():
@@ -166,22 +189,25 @@ def test2():
     
     r, t, k, s1, s2, v1, v2, rho = 0.05,1., -10.,112.22, 103.05, 0.1, 0.15, 0.3
     kirk_res = Kirk(r,t,k,s1,s2,v1,v2,rho)
+    numerical_res = numerical(r,t,k,s1,s2,v1,v2,rho)
 
-    x,y,z = [], [], []
-    print("no.paths| Monte Carlo | Kirk's Approximation")
+    x,y,z,a = [], [], [], []
+    print("no.paths| Monte Carlo | Kirk's Approximation | Numerical")
     for i in range(15, 60):
         no_of_paths = int(exp(i/5.))
         mc_res = MC(no_of_paths,r,t,k,s1,s2,v1,v2,rho)
         x.append(no_of_paths)
         y.append(mc_res)
         z.append(kirk_res)
-        print('{:7.0f} |   {:7.4f}   | {:7.4f}'.format(no_of_paths, mc_res, kirk_res))
+        a.append(numerical_res)
+        print('{:7.0f} |   {:7.4f}   | {:7.4f}              | {:7.4f}'.format(no_of_paths, mc_res, kirk_res, numerical_res))
 
     plt.plot(x,y, 'o--')
     plt.plot(x,z, '--')
+    plt.plot(x,a, '--')
     plt.show()
 
 # TEST RUN
 
-test1()
+# test1()
 test2()
