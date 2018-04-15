@@ -138,21 +138,21 @@ def Kirk(r, t, k, s1, s2, v1, v2, rho):
     result = exp(-r * t) * (s1*stats.norm.cdf(dk1) - (s2+k)*stats.norm.cdf(dk2))
     return result
 
-def _element(dw1, dw3, s1, s2, v1, v2, t, rho, k):
-    dw2 = rho * dw1 + sqrt(1. - rho**2) * dw3
-    s1 = s1 * exp( -0.5*t*v1**2 + v1*sqrt(t)*dw1 )
-    s2 = s2 * exp( -0.5*t*v2**2 + v2*sqrt(t)*dw2 )
+def _element(w1, w3, s1, s2, v1, v2, t, rho, k):
+    s1 = s1 * exp( -0.5*t*v1**2 + v1*sqrt(t)*w1 )
+    w2 = rho * w1 + sqrt(1. - rho**2) * w3
+    s2 = s2 * exp( -0.5*t*v2**2 + v2*sqrt(t)*w2 )
     return max(s1 - s2 - k, 0.)
 
 def numerical(r,t,k,s1,s2,v1,v2,rho):
     # setup the steps independent random variable w1, w3
-    nofs1,sz1,left1 = 100, 0.1, -10.
-    nofs3,sz3,left3 = 100, 0.1, -10.
+    nofs1,dw1,left1 = 400, 0.1, -20.
+    nofs3,dw3,left3 = 400, 0.1, -20.
     sums = 0.
     for i in range(nofs1):
         for j in range(nofs3):
-            dw1, dw3 = left1 + i*sz1, left3 + j*sz3
-            u = _element(dw1, dw3, s1, s2, v1, v2, t, rho, k) * stats.norm.pdf(dw1) * stats.norm.pdf(dw3) * dw1 * dw3
+            w1, w3 = left1 + i*dw1, left3 + j*dw3
+            u = _element(w1, w3, s1, s2, v1, v2, t, rho, k) * stats.norm.pdf(w1) * stats.norm.pdf(w3) * dw1 * dw3
             sums += u
             
     return exp(-r*t) * sums
@@ -187,7 +187,9 @@ def test2():
     r, t, k, s1, s2, v1, v2, rho = 0.05,1., -10., 112.22, 103.05, 0.1, 0.15, 0.3
     '''
     
-    r, t, k, s1, s2, v1, v2, rho = 0.05,1., -10.,112.22, 103.05, 0.1, 0.15, 0.3
+    #r, t, k, s1, s2, v1, v2, rho = 0.05,1., -10.,112.22, 103.05, 0.1, 0.15, 0.3
+    r, t, k, s1, s2, v1, v2, rho = 0.05,1., -100.,112.22, 0., 0.1, 0., 0.0
+
     kirk_res = Kirk(r,t,k,s1,s2,v1,v2,rho)
     numerical_res = numerical(r,t,k,s1,s2,v1,v2,rho)
 
@@ -209,5 +211,5 @@ def test2():
 
 # TEST RUN
 
-# test1()
-test2()
+test1()
+# test2()
