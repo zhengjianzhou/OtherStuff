@@ -9,22 +9,29 @@ Question:
     => Given S1, S2 are dependent GBMs with correlation 'rho'
 2) Find a closed form approximation and implement the logic
 3) Show MC convergence graph to the approximation
+4) Implement the numerical double integration solution - a) try equal step slices, b) try Gauss Legendre Quadrature, c) find the smart choices for boundary conditions and degrees
+
 Answer:
-1) The Monte Carlo simulation was written in below function MC(). Use cases can be found in test1(), test2()
-2) Implemented Kirk's approximation in function kirk(), referring to, Kirk, E. (1995): "Correlation in the energy markets," In Managing Energy Price Risk (First Edition)
-3) test2() produces the MC convergence graph to Kirk approximation for given parameters
+* The Monte Carlo simulation was written in below function MC(). Use cases can be found in test1(), test2()
+* Implemented Kirk's approximation in function kirk(), referring to, Kirk, E. (1995): "Correlation in the energy markets," In Managing Energy Price Risk (First Edition)
+* test2() produces the MC convergence graph to Kirk approximation for given parameters
+* test3() performs a search for better Degrees of Gauss Legendre Quadrature for degree1 and degree2
+* test4() performs a search for better boundary choices of Gauss Legendre Quadrature
+
 Potential improvements:
 This code is for demonstration purpose. Below points can be implemented if needed,
 1) performance tweeks
 2) improve the matplotlib result plotting
 3) use OptionParser class for easier user inputs for testing
     => from optparse import OptionParser
+
 Variables:
     s1, s2: asset prices
     v1, v2: daily volatilities
     r:      riskless interest rate
     rho:    correlation btw w1 and w2
     t:      time (in years)
+
 Given,
     corr(dw1, dw2) = rho
 Let w1 be an independent Geometric Brownian Motion(GBM), we have,
@@ -311,7 +318,7 @@ def test3():
 
 def test4():
     '''
-    Tests 3: Simple search for better Degrees of Gauss Legendre Quadrature for degree1 and degree2
+    Tests 4: Simple search for better boundary choices of Gauss Legendre Quadrature
     Same parameters were choosen for comparison
         r, t, s1, s2, v1, v2 2 0.05,1.,112.22,103.05, 0.1, 0.15
     Result can be compare with "Table 1 Spread option value approximation" in the paper, which are consistent.
