@@ -9,11 +9,16 @@ Question:
     => Given S1, S2 are dependent GBMs with correlation 'rho'
 2) Find a closed form approximation and implement the logic
 3) Show MC convergence graph to the approximation
-4) Implement the numerical double integration solution - a) try equal step slices, b) try Gauss Legendre Quadrature, c) find the smart choices for boundary conditions and degrees
+4) Implement the numerical double integration solution,
+   - a) try equal step slices
+   - b) try Gauss Legendre Quadrature
+   - c) find the smart choices for boundary conditions and degrees
 
 Answer:
 * The Monte Carlo simulation was written in below function MC(). Use cases can be found in test1(), test2()
-* Implemented Kirk's approximation in function kirk(), referring to, Kirk, E. (1995): "Correlation in the energy markets," In Managing Energy Price Risk (First Edition)
+* Implemented Kirk's approximation in function kirk(),
+  - referring to, Kirk, E. (1995): "Correlation in the energy markets," In Managing Energy Price Risk (First Edition)
+  - Kirk's formula from link: http://www.opus-finance.com/sites/default/files/Fichier_Site_Opus/Article_recherche/Articles_externes/2013/Closed_form_spread_option_valuation/Closed_form_spread_option_valuation.pdf
 * test2() produces the MC convergence graph to Kirk approximation for given parameters
 * test3() performs a search for better Degrees of Gauss Legendre Quadrature for degree1 and degree2
 * test4() performs a search for better boundary choices of Gauss Legendre Quadrature
@@ -24,6 +29,7 @@ This code is for demonstration purpose. Below points can be implemented if neede
 2) improve the matplotlib result plotting
 3) use OptionParser class for easier user inputs for testing
     => from optparse import OptionParser
+4) more test cases
 
 Variables:
     s1, s2: asset prices
@@ -209,7 +215,7 @@ def numerical_slices(r,t,k,s1,s2,v1,v2,rho):
     return exp(-r*t) * sums
 
 def numerical_gauss_legendre(r,t,k,s1,s2,v1,v2,rho, glq1=(-20., 20., 50), glq3=(-20., 20., 50)):
-    # numerical integrations for equal length slices
+    # numerical integrations for Gauss Legendre Quadrature slices
     # setup the steps independent random variable w1, w3
     # choosing a notation of '3' to identify the independent random var dw3
     a1, b1, GL_DEGREE1 = glq1
