@@ -3,7 +3,13 @@ import itertools as it
 def solve24(cs):
     os = set(["".join(i) for i in it.product("+-*/",repeat=3)])
     ns = set(["".join(i) for i in it.permutations(cs)])
-    bs = ["(    )         ","(       )      ","   (    )     ","      (    )  ","(    )(    )  ","   (       )  ","             "]
+    bs = ["(    )       ", \
+          "(       )    ", \
+          "   (    )    ", \
+          "      (    ) ", \
+          "(    )(    ) ", \
+          "   (       ) ", \
+          "             "]
     for oo in os:
         for nn in ns:
             s = "".join(it.chain(*zip(nn,"....",oo+" ")))
@@ -15,4 +21,8 @@ def solve24(cs):
                 except:
                     pass
 
+solve24("44XX")
+solve24("3388")
+solve24("3377")
 solve24("4477")
+solve24("17KK")
