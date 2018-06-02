@@ -11,7 +11,7 @@ def solve24(cs):
                 sb = "".join(it.chain(*zip(b,s))).replace(" ","").replace("X","10").replace("J","11").replace("Q","12").replace("K","13")
                 try:
                     if abs(eval(sb)-24.) < 0.001:
-                        print(sb.replace(".","").replace("10","X").replace("11","J").replace("12","Q").replace("13","Q"))
+                        print(sb.replace(".","").replace("10","X").replace("11","J").replace("12","Q").replace("13","K"))
                 except:
                     pass
 
