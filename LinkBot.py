@@ -1,3 +1,4 @@
+### pip3 install pyperclip Tk
 import tkinter as tk
 import pyperclip
 from functools import partial
@@ -36,7 +37,7 @@ for k in texts.keys():
         B = tk.Button(top, text=k, command=g)
         B.pack()
 
-top.title("LinkBot")
+top.title("James' LinkBot")
 top.resizable(False, False)
 top.attributes('-toolwindow',True)
 top.attributes('-topmost',True)
