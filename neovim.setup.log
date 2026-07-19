@@ -1,0 +1,77 @@
+# MACOS
+brew install neovim ripgrep fd fzf gcc
+rm -rf ~/.config/nvim ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim
+
+
+#LINUX
+# download image from https://packages.ubuntu.com/search?keywords=neovim
+chmod u+x nvim-linux-x86_64.appimage
+sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
+sudo apt update
+sudo apt install ripgrep fd-find fzf gcc make unzip git -y
+rm -rf ~/.config/nvim ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim
+
+
+# LazyVim
+git clone https://github.com/LazyVim/starter ~/.config/nvim
+rm -rf ~/.config/nvim/.git
+
+
+
+# to start
+nvim
+
+
+:LazyExtras
+x to package install - go to the line and x again - when exit and reenter it will auto install
+
+
+# to use
+===============================================================================
+                       LAZYVIM PERSONAL CHEAT SHEET
+===============================================================================
+Note: The <leader> key is mapped to the [ Spacebar ] by default.
+
+[ PROJECT EXPLORER & FOLDER VIEW ]
+-------------------------------------------------------------------------------
+Space + e       - Open or Close the folder view panel
+j / k           - Move cursor down or up the folder list
+Enter           - Open highlighted file OR expand/collapse a directory folder
+a               - Create a new file (add a trailing '/' for a new folder)
+r               - Rename a file or folder
+d               - Delete a file or folder (requires prompt confirmation)
+.               - Toggle visibility of hidden files (dotfiles like .env)
+q               - Close the folder view panel instantly
+
+[ TAB & BUFFER MANAGEMENT ]
+-------------------------------------------------------------------------------
+Shift + l       - Switch to the next tab on the RIGHT
+Shift + h       - Switch to the next tab on the LEFT
+Space + b + d   - Close current tab (Buffer Delete)
+Space + [1-9]   - Jump directly to a tab by its sequence number
+Space + f + b   - Open an interactive list to fuzzy-search open tabs
+
+[ AUTOCOMPLETE & CODE PROMPTS ]
+-------------------------------------------------------------------------------
+Ctrl + n        - Scroll DOWN the popup completion dropdown menu
+Ctrl + p        - Scroll UP the popup completion dropdown menu
+Enter           - Accept / Confirm the highlighted selection
+Ctrl + y        - Alternative shortcut to accept / confirm selection
+Right Arrow     - Accept inline gray AI "Ghost Text" predictions
+
+[ RUNNING CODE & EMBEDDED TERMINALS ]
+-------------------------------------------------------------------------------
+Ctrl + /        - Toggle the floating terminal over your code
+Ctrl + -        - Alternative shortcut to toggle the floating terminal
+Ctrl + \ then   - Escape active terminal mode back to normal Vim mode
+Ctrl + n          (Allows you to scroll up terminal text using j/k)
+:vsplit         - Split your layout screen vertically
+:terminal       - Launch a terminal inside your current active window split
+:! <command>    - Run a quick, one-off background command (e.g., :! cargo run)
+
+[ FINDING FILES & CODE (TELESCOPE) ]
+-------------------------------------------------------------------------------
+Space + f + f   - Fuzzy-search for ANY file name in your current project
+Space + s + g   - Live Grep (Search exact text strings inside every single file)
+
+===============================================================================
